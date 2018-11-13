@@ -1,9 +1,9 @@
-const swarm = require('webrtc-swarm')
-const signalhub = require('signalhubws')
-const rai = require('random-access-idb')
-const hyperdb = require('hyperdb')
-const uuidv4 = require('uuid/v4')
-const pump = require('pump')
+import swarm from 'webrtc-swarm'
+import signalhub from 'signalhubws'
+import rai from 'random-access-idb'
+import hyperdb from 'hyperdb'
+import uuidv4 from 'uuid/v4'
+import pump from 'pump'
 
 const HUB_URL = 'localhost:8080'
 
