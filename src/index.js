@@ -20,7 +20,9 @@ const createSwarm = (hub) => {
     swOpts.wrtc = require('wrtc')
   }
 
-  return swarm(hub, config.SWARM_CONFIG)
+  swOpts.config = config.SWARM_CONFIG
+
+  return swarm(hub, swOpts)
 }
 
 class Masq {
