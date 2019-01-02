@@ -14,6 +14,19 @@ const debug = (function () {
   }
 })()
 
+const createSwarm = (hub) => {
+  const swOpts = {}
+  if (swarm.WEBRTC_SUPPORT) {
+    swOpts.wrtc = require('wrtc')
+  }
+
+  swOpts.config = config.SWARM_CONFIG
+
+  console.log(JSON.stringify(config))
+
+  return swarm(hub, swOpts)
+}
+
 class Masq {
   /**
    * constructor
@@ -130,11 +143,13 @@ class Masq {
       // Subscribe to channel for a limited time to sync with masq
       debug(`Creation of a hub with ${channel} channel name`)
       const hub = signalhub(channel, config.HUB_URLS)
-      const swOpts = swarm.WEBRTC_SUPPORT ? undefined : { wrtc: require('wrtc') }
-      const sw = swarm(hub, swOpts)
+      const sw = createSwarm(hub)
+
+      console.log('channel init: ' + channel)
 
       sw.on('peer', (peer, id) => {
         debug(`The peer ${id} join us...`)
+        console.log('peer connected : ' + channel)
         peer.on('data', (data) => { dataHandler(sw, peer, data) })
       })
 
@@ -150,13 +165,9 @@ class Masq {
 
   _startReplication () {
     const discoveryKey = this.userAppDb.discoveryKey.toString('hex')
+    console.log('start replication : ' + discoveryKey)
     this.userAppRepHub = signalhub(discoveryKey, config.HUB_URLS)
-
-    if (swarm.WEBRTC_SUPPORT) {
-      this.userAppRepSW = swarm(this.userAppRepHub)
-    } else {
-      this.userAppRepSW = swarm(this.userAppRepHub, { wrtc: require('wrtc') })
-    }
+    this.userAppRepSW = createSwarm(this.userAppRepHub)
 
     this.userAppRepSW.on('peer', async (peer, id) => {
       const stream = this.userAppDb.replicate({ live: true })
@@ -258,6 +269,8 @@ class Masq {
     const keyBase64 = Buffer.from(extractedKey).toString('base64')
     this.loginUrl = new URL(config.MASQ_APP_BASE_URL)
     const requestType = 'login'
+    console.log('channel : ' + this.loginChannel)
+    console.log('key : ' + keyBase64)
     const hashParams = JSON.stringify([this.appName, requestType, this.loginChannel, keyBase64])
     this.loginUrl.hash = '/' + Buffer.from(hashParams).toString('base64')
 
@@ -309,6 +322,8 @@ class Masq {
       }
 
       this._checkMessage(json, registering, waitingForWriteAccess, handleError)
+
+      console.log('lib: message: ' + JSON.stringify(json))
 
       switch (json.msg) {
         case 'authorized':

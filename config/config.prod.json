@@ -1,4 +1,15 @@
 {
-  "MASQ_APP_BASE_URL": "https://qwantresearch.github.io/masq-app/",
-  "HUB_URLS": [ "wss://signalhub-jvunerwwrg.now.sh" ]
+  "MASQ_APP_BASE_URL": "https://masq-app-l2qamqx00.now.sh/build/",
+  "HUB_URLS": [ "wss://signalhub-jvunerwwrg.now.sh" ],
+  "SWARM_CONFIG": {
+    "iceServers": [
+      { "urls": "stun:stun.l.google.com:19302" },
+      { "urls": "stun:global.stun.twilio.com:3478?transport=udp" },
+      {
+        "urls": "turn:numb.viagenie.ca",
+        "credential": "muazkh",
+        "username": "webrtc@live.com"
+      }
+    ]
+  }
 }
