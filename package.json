@@ -21,10 +21,18 @@
   },
   "homepage": "https://github.com/QwantResearch/masq-lib#readme",
   "dependencies": {
+    "libp2p": "^0.24.4",
+    "libp2p-mplex": "^0.8.4",
+    "libp2p-secio": "^0.11.1",
+    "libp2p-spdy": "^0.13.1",
+    "libp2p-webrtc-star": "^0.15.8",
+    "libp2p-websocket-star": "^0.10.2",
+    "libp2p-websockets": "^0.12.2",
+    "masq-common": "git+https://github.com/QwantResearch/masq-common",
+    "peer-info": "^0.15.1",
     "signalhubws": "^1.0.7",
     "uuid": "^3.3.2",
     "webrtc-swarm": "git+https://github.com/QwantResearch/webrtc-swarm#masq",
-    "masq-common": "git+https://github.com/QwantResearch/masq-common",
     "wrtc": "^0.2.1"
   },
   "devDependencies": {

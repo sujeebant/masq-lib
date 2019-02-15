@@ -8,6 +8,8 @@ const ERRORS = common.errors.ERRORS
 const MasqError = common.errors.MasqError
 const CURRENT_USER_INFO_STR = 'currentUserInfo'
 
+const createNode = require('./create-node')
+
 const config = require('../config/config')
 
 const debug = (function () {
