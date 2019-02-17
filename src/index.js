@@ -188,12 +188,86 @@ class Masq {
 
   _startReplication () {
     const discoveryKey = this.userAppDb.discoveryKey.toString('hex')
+
+    const n = createNode(
+      (err, node) => {
+
+        if (err) {
+          return console.log('Could not create the Node, check if your browser has WebRTC Support', err)
+        }
+
+        let connections = {}
+
+
+        node.on('peer:discovery', (peerInfo) => {
+          const idStr = peerInfo.id.toB58String()
+          if (connections[idStr]) {
+            // If we're already trying to connect to this peer, dont dial again
+            return
+          }
+          console.log('Discovered a peer:', idStr)
+
+          connections[idStr] = true
+          node.dial(peerInfo, (err, conn) => {
+            if (err) {
+              // Prevent immediate connection retries from happening
+              // and include a 10s jitter
+              const timeToNextDial = 25 * 1000 + (Math.random(0) * 10000).toFixed(0)
+              console.log('Failed to dial:', idStr)
+              setTimeout(() => delete connections[idStr], timeToNextDial)
+            }
+          })
+        })
+
+        node.on('peer:connect', (peerInfo) => {
+          const idStr = peerInfo.id.toB58String()
+          console.log('Got connection to: ' + idStr)
+
+          const stream = this.userAppDb.replicate({ live: true })
+          pump(peer, stream, peer)
+
+
+					node.dialProtocol(peerInfo, '/replication', (err, conn) => {
+						if (err) { throw err }
+
+						pull(pull.values(['Hello', ' ', 'p2p', ' ', 'world', '!']), conn)
+					})
+
+        })
+
+        node.on('peer:disconnect', (peerInfo) => {
+          const idStr = peerInfo.id.toB58String()
+          delete connections[idStr]
+          console.log('Lost connection to: ' + idStr)
+        })
+
+				node.handle('/replication', (protocol, conn) => {
+					pull(
+						conn,
+						pull.map((v) => v.toString()),
+						pull.log()
+					)
+				})
+
+
+        node.start((err) => {
+          if (err) {
+            return console.log('WebRTC not supported')
+          }
+
+          const idStr = node.peerInfo.id.toB58String()
+
+          console.log('Node (with id : ' + idStr + ') is listening o/')
+
+          // NOTE: to stop the node
+          // node.stop((err) => {})
+        })
+    })
+
     this.userAppRepHub = signalhub(discoveryKey, config.HUB_URLS)
     this.userAppRepSW = createSwarm(this.userAppRepHub)
 
     this.userAppRepSW.on('peer', async (peer, id) => {
-      const stream = this.userAppDb.replicate({ live: true })
-      pump(peer, stream, peer)
     })
   }
 
