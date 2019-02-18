@@ -30,7 +30,9 @@
     "libp2p-websockets": "^0.12.2",
     "masq-common": "git+https://github.com/QwantResearch/masq-common",
     "peer-info": "^0.15.1",
+    "pull-stream": "^3.6.9",
     "signalhubws": "^1.0.7",
+    "stream-to-pull-stream": "^1.7.2",
     "uuid": "^3.3.2",
     "webrtc-swarm": "git+https://github.com/QwantResearch/webrtc-swarm#masq",
     "wrtc": "^0.2.1"

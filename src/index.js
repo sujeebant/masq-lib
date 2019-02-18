@@ -3,6 +3,9 @@ const signalhub = require('signalhubws')
 const uuidv4 = require('uuid/v4')
 const pump = require('pump')
 
+const toPull = require('stream-to-pull-stream')
+const pull = require('pull-stream')
+
 const common = require('masq-common')
 const ERRORS = common.errors.ERRORS
 const MasqError = common.errors.MasqError
@@ -224,6 +227,8 @@ class Masq {
           console.log('Got connection to: ' + idStr)
 
           const stream = this.userAppDb.replicate({ live: true })
+          const pullStream = toPull.duplex(stream)
+
           pump(peer, stream, peer)
 
 
