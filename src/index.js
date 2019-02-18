@@ -227,11 +227,11 @@ class Masq {
           pump(peer, stream, peer)
 
 
-					node.dialProtocol(peerInfo, '/replication', (err, conn) => {
-						if (err) { throw err }
+          node.dialProtocol(peerInfo, '/replication', (err, conn) => {
+            if (err) { throw err }
 
-						pull(pull.values(['Hello', ' ', 'p2p', ' ', 'world', '!']), conn)
-					})
+            pull(pull.values(['Hello', ' ', 'p2p', ' ', 'world', '!']), conn)
+          })
 
         })
 
@@ -241,13 +241,13 @@ class Masq {
           console.log('Lost connection to: ' + idStr)
         })
 
-				node.handle('/replication', (protocol, conn) => {
-					pull(
-						conn,
-						pull.map((v) => v.toString()),
-						pull.log()
-					)
-				})
+        node.handle('/replication', (protocol, conn) => {
+          pull(
+            conn,
+            pull.map((v) => v.toString()),
+            pull.log()
+          )
+        })
 
 
         node.start((err) => {
